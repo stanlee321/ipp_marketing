@@ -1,0 +1,98 @@
+version: '3.5'
+services:
+
+  api:
+    image: ippb/fast_api_gateway
+    container_name: api
+    restart: always
+    ports:
+      - "8080:80"
+    env_file:
+      - ./configs/api.env
+    volumes:
+      - ./auth:/app/auth
+      - ./configs.yaml:/app/configs.yaml
+    depends_on:
+      - kafka
+      - scraper
+
+  ui:
+    image:  ippb/ui_linkedin
+    container_name: ui
+    restart: always
+    ports:
+      - "8500:8500"
+    env_file:
+      - ./configs/ui.env
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+  
+
+  scraper:
+    image: ippb/linkend_selenium:latest
+    container_name: scraper
+    restart: always
+    env_file:
+      - ./configs/cre.env
+    volumes:
+      - ./auth:/app/auth
+      - ./configs.yaml:/app/configs.yaml
+    environment:
+      - HEADLESS=1
+
+  postgres:
+    restart: always
+    #  this container_name would be used inside of the pp as hostname for postgres
+    container_name: postgres_db
+    image: postgres:alpine
+    # provide script to initiate tables
+    volumes:
+      - ./scripts/LINKED.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+    # Pass postgres environment variables
+    environment:
+      POSTGRES_PASSWORD: zxcvbnml
+      POSTGRES_DB: cartdb
+      POSTGRES_USER: cartdb_user
+    expose:
+      - "5432"
+    ports:
+      - 5433:5432
+      
+  kafka-ui:
+    image: provectuslabs/kafka-ui
+    container_name: kafka-ui
+    ports:
+      - "8080:8080"
+    restart: always
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=local
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:29092
+  kafka:
+    image: obsidiandynamics/kafka
+    container_name: kafka
+    restart: "no"
+    ports:
+      - "2181:2181"
+      - "9093:9093"
+    environment:
+      KAFKA_LISTENERS: "INTERNAL://:29092,EXTERNAL://:9093"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:29092,EXTERNAL://localhost:9093"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+      KAFKA_ZOOKEEPER_SESSION_TIMEOUT: "6000"
+      KAFKA_RESTART_ATTEMPTS: "10"
+      KAFKA_RESTART_DELAY: "5"
+      ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: "0"
+    healthcheck:
+      test: nc -z localhost 29092 || exit
+      interval: 10s
+      timeout: 5s
+      retries: 15
+    # networks:
+    #   - my-net
+
+volumes:
+  postgres_data:
