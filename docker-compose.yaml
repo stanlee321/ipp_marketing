@@ -2,20 +2,17 @@ version: '3.5'
 services:
 
   api:
-    image: ippb/fast_api_gateway
+    image: ippb/fast_api_gateway:latest 
     container_name: api
     restart: always
+    pull_policy: if_not_present
     ports:
       - "8080:80"
     env_file:
       - ./configs/api.env
-    volumes:
-      - ./auth:/app/auth
-      - ./configs.yaml:/app/configs.yaml
     depends_on:
       - kafka
       - scraper
-
   ui:
     image:  ippb/ui_linkedin
     container_name: ui
@@ -29,16 +26,14 @@ services:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
   
-
   scraper:
     image: ippb/linkend_selenium:latest
     container_name: scraper
     restart: always
     env_file:
-      - ./configs/cre.env
+      - ./configs/core.env
     volumes:
       - ./auth:/app/auth
-      - ./configs.yaml:/app/configs.yaml
     environment:
       - HEADLESS=1
 
@@ -65,7 +60,7 @@ services:
     image: provectuslabs/kafka-ui
     container_name: kafka-ui
     ports:
-      - "8080:8080"
+      - "8081:8080"
     restart: always
     environment:
       - KAFKA_CLUSTERS_0_NAME=local
