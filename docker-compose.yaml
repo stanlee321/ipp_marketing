@@ -2,7 +2,7 @@ version: '3.5'
 services:
 
   api:
-    image: ippb/fast_api_gateway:latest 
+    image: stanlee321/fast_api_gateway:latest 
     container_name: api
     restart: always
     pull_policy: if_not_present
@@ -14,7 +14,7 @@ services:
       - kafka
       - scraper
   ui:
-    image:  ippb/ui_linkedin
+    image:  stanlee321/ui_linkedin:latest
     container_name: ui
     restart: always
     ports:
@@ -27,7 +27,7 @@ services:
       - FLASK_DEBUG=1
   
   scraper:
-    image: ippb/linkend_selenium:latest
+    image: stanlee321/linkend_selenium:latest
     container_name: scraper
     restart: always
     env_file:
