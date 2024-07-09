@@ -17,6 +17,7 @@ services:
     image:  stanlee321/ui_linkedin:latest
     container_name: ui
     restart: always
+    pull_policy: if_not_present
     ports:
       - "8500:8500"
     env_file:
@@ -30,6 +31,7 @@ services:
     image: stanlee321/linkend_selenium:latest
     container_name: scraper
     restart: always
+    pull_policy: if_not_present
     env_file:
       - ./configs/core.env
     volumes:
