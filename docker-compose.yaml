@@ -5,7 +5,7 @@ services:
     image: stanlee321/fast_api_gateway:latest 
     container_name: api
     restart: always
-    pull_policy: if_not_present
+    pull_policy: always
     ports:
       - "8080:80"
     env_file:
@@ -17,12 +17,13 @@ services:
     image:  stanlee321/ui_linkedin:latest
     container_name: ui
     restart: always
-    pull_policy: if_not_present
+    pull_policy: always
     ports:
       - "8500:8500"
     env_file:
       - ./configs/ui.env
     environment:
+      - DEBUG=1
       - FLASK_APP=app.py
       - FLASK_ENV=development
       - FLASK_DEBUG=1
@@ -31,7 +32,7 @@ services:
     image: stanlee321/linkend_selenium:latest
     container_name: scraper
     restart: always
-    pull_policy: if_not_present
+    pull_policy: always
     depends_on:
       - kafka
     env_file:
