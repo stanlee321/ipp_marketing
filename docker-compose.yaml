@@ -32,7 +32,7 @@ services:
     image: stanlee321/linkend_selenium:latest
     container_name: scraper
     restart: always
-    pull_policy: always
+    pull_policy: if_not_present
     depends_on:
       - kafka
     env_file:
