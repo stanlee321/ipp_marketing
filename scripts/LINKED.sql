@@ -55,19 +55,38 @@ CREATE TABLE "cart_item" (
 
 CREATE TABLE "profiles" (
   "id" serial4 NOT NULL,
-  "created_at" timestamptz NOT NULL,
-  "updated_at" timestamptz NOT NULL DEFAULT (now()),
-  "is_deleted" bool NOT NULL DEFAULT false,
+  "created_at" timestamptz,
+  "updated_at" timestamptz DEFAULT (now()),
+  "is_deleted" bool DEFAULT false,
   "uuid" uuid NOT NULL DEFAULT (uuid_generate_v4()),
-  "name" varchar(255) NOT NULL,
-  "role" varchar(600) NOT NULL,
-  "location" varchar(255) NOT NULL,
-  "connection" varchar(255) NOT NULL,
-  "services" varchar(600) NOT NULL,
-  "profile_url" varchar(600) NOT NULL,
+  "name" varchar(1000) ,
+  "role" varchar,
+  "location" varchar(255),
+  "connection" varchar(255),
+  "services" varchar(600),
+  "profile_url" varchar(600),
   "page" int4 NOT NULL,
   "status" varchar(20) NOT NULL,
-  "search_url" varchar NOT NULL,
+  "search_url" varchar,
+
+
+  "location_work" varchar,
+  "business_name_main" varchar,
+  "business_name_secondary" varchar,
+  "website"  varchar,
+  "email" varchar(100),
+  "phone" varchar(100),
+  "whatsapp" varchar(100),
+
+  "message_type" varchar(255),
+  "ci_intro_ippb" varchar(255),
+  "ci_staff_aug" varchar(255),
+  "ci_gestion_datos" varchar(255),
+  "ci_nkt_medio" varchar(255),
+  "medio" varchar(255),
+  "send_by" varchar(255),
+  "linkedin_status" varchar(255),
+
   PRIMARY KEY ("id")
 );
 
